@@ -17,7 +17,6 @@
     - name: Configure time zone (Europe/Madrid)
       timezone:
         name: Europe/Madrid
-      become: yes
 
 # Install chorny
     - name: Install chorny
