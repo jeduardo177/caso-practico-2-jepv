@@ -1,0 +1,43 @@
+---
+# Update machine
+    - name: Update machine
+      dnf:
+        name: "*"
+        state: latest
+      become: true
+
+# Install commons packages
+    - name: Install commons packages
+      dnf:
+        name: "{{ common_packages }}"
+        state: present
+      become: yes
+
+# Sync time zone
+    - name: Configure time zone (Europe/Madrid)
+      timezone:
+        name: Europe/Madrid
+      become: yes
+
+# Install chorny
+    - name: Install chorny
+      dnf:
+        name: chrony
+        state: present
+      become: yes
+
+# Enable chronyd
+    - name: Enable chronyd
+    systemd:
+      name: chronyd
+      state: started
+      enabled: yes
+      masked: nos
+    become: yes
+
+# Disable SELinux
+    - name: Disable SELinux
+      selinux:
+        state: disabled
+      become: yes
+

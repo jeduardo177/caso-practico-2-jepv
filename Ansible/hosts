@@ -1,0 +1,14 @@
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_user=jeduardo177
+
+[master]
+master ansible_host=10.0.1.10
+
+[workers]
+worker01 ansible_host=10.0.1.11
+worker02 ansible_host=10.0.1.20
+
+[nfs]
+nfs ansible_host=10.0.1.21
+
