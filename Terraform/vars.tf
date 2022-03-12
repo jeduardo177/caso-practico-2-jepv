@@ -13,11 +13,11 @@ variable "vm_big_size" {
  variable "small_machines" {
   description = "VM's small machine to create"
   type = list(string)
-  default = ["worker02", "nfs"]
+  default = ["worker02", "nfs"] # [worker02 = ansible controller, nfs = nfs]
 }
 
 variable "big_machines" {
   description = "VM's big machine to create"
   type = list(string)
-  default = ["master", "worker01"]
+  default = ["master", "worker01"] # [master = K8Master, worker01 = K8Worker]
 }

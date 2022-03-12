@@ -16,6 +16,31 @@ resource "azurerm_linux_virtual_machine" "myVMBig" {
         public_key = file(var.public_key_path)
     }
 
+    connection {
+        host        = self.public_ip_address
+        user        = var.ssh_user
+        type        = "ssh"
+        private_key = file(var.private_key_path)
+        timeout     = "5m"
+        agent       = false
+    }
+
+    provisioner "file" {
+        source      = var.public_key_path
+        destination = "/home/${var.ssh_user}/.ssh/id_az_stdent.pub"
+    }
+
+    provisioner "file" {
+        source      = var.private_key_path
+        destination = "/home/${var.ssh_user}/.ssh/id_az_stdent"
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "sudo chmod 600 ~/.ssh/id_az_stdent"
+        ]
+    }
+
     os_disk {
         caching              = "ReadWrite"
         storage_account_type = "Standard_LRS"
@@ -56,6 +81,31 @@ resource "azurerm_linux_virtual_machine" "myVMSmall" {
     admin_ssh_key {
         username   = var.ssh_user
         public_key = file(var.public_key_path)
+    }
+
+    connection {
+        host        = self.public_ip_address
+        user        = var.ssh_user
+        type        = "ssh"
+        private_key = file(var.private_key_path)
+        timeout     = "5m"
+        agent       = false
+    }
+
+    provisioner "file" {
+        source      = var.public_key_path
+        destination = "/home/${var.ssh_user}/.ssh/id_az_stdent.pub"
+    }
+
+    provisioner "file" {
+        source      = var.private_key_path
+        destination = "/home/${var.ssh_user}/.ssh/id_az_stdent"
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "sudo chmod 600 ~/.ssh/id_az_stdent"
+        ]
     }
 
     os_disk {

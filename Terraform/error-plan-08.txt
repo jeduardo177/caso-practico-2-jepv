@@ -1,0 +1,13 @@
+ Error: creating Linux Virtual Machine: (Name "jepv-cp02-bigvm-worker01" / Resource Group "rg_jepv_cp2"): compute.VirtualMachinesClient#CreateOrUpdate: Failure sending request: StatusCode=400 -- Original Error: Code="NicInUse" Message="Network Interface VM2Nic2 is used by existing resource /subscriptions/23a9f051-06cd-4df1-b217-06bfe21a7348/resourceGroups/rg_jepv_cp2/providers/Microsoft.Compute/virtualMachines/jepv-cp02-smallvm-nfs. In order to delete the network interface, it must be dissociated from the resource. To learn more, see aka.ms/deletenic." Details=[]
+│
+│   with azurerm_linux_virtual_machine.myVMBig[1],
+│   on vm.tf line 4, in resource "azurerm_linux_virtual_machine" "myVMBig":
+│    4: resource "azurerm_linux_virtual_machine" "myVMBig" {
+│
+╵
+╷
+│ Error: waiting for creation of Linux Virtual Machine: (Name "jepv-cp02-smallvm-worker02" / Resource Group "rg_jepv_cp2"): Code="NicInUse" Message="Network Interface VM1Nic1 is used by existing resource /subscriptions/23a9f051-06cd-4df1-b217-06bfe21a7348/resourceGroups/rg_jepv_cp2/providers/Microsoft.Compute/virtualMachines/jepv-cp02-bigvm-master. In order to delete the network interface, it must be dissociated from the resource. To learn more, see aka.ms/deletenic."
+│
+│   with azurerm_linux_virtual_machine.myVMSmall[0],
+│   on vm.tf line 46, in resource "azurerm_linux_virtual_machine" "myVMSmall":
+│   46: resource "azurerm_linux_virtual_machine" "myVMSmall" {

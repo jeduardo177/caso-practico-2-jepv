@@ -13,7 +13,13 @@ variable "storage_account" {
 variable "public_key_path" {
   type = string
   description = "Path for the public key to access the instances"
-  default = "~/.ssh/id_rsa.pub"
+  default = "~/.ssh/id_az_stdent.pub"
+}
+
+variable "private_key_path" {
+  type = string
+  description = "Path for the private key to access the instances"
+  default = "~/.ssh/id_az_stdent"
 }
 
 variable "ssh_user" {
