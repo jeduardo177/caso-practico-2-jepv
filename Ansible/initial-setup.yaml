@@ -1,7 +1,7 @@
 ---
 
-- name: common initial configuration
-  host: [all]
+- name: Common initial configuration
+  hosts: all
   vars_files:
     - "group_vars/commons.yaml"
   gather_facts: true
