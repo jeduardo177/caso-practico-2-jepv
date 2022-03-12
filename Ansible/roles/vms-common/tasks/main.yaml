@@ -28,12 +28,12 @@
 
 # Enable chronyd
     - name: Enable chronyd
-    systemd:
-      name: chronyd
-      state: started
-      enabled: yes
-      masked: nos
-    become: yes
+      systemd:
+        name: chronyd
+        state: started
+        enabled: yes
+        masked: nos
+      become: yes
 
 # Disable SELinux
     - name: Disable SELinux
