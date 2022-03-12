@@ -1,2 +1,2 @@
 #!/bin/bash
-ansible-playbook -i host initial-septup.yaml
+ansible-playbook -i host initial-setup.yaml
