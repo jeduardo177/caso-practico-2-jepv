@@ -1,2 +1,2 @@
 ---
-common_packages: ['nfs4-acl-tools', 'wget', 'nfs-utils']
+common_packages: ['wget', 'net-tools']

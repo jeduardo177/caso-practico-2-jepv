@@ -1,0 +1,2 @@
+---
+packages_to_use_nfs: ['nfs-utils', 'nfs4-acl-tools']

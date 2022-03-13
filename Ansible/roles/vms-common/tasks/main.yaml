@@ -14,9 +14,10 @@
       become: yes
 
 # Sync time zone
-    - name: Configure time zone (Europe/Madrid)
-      timezone:
+    - name: Configure time zone
+      community.general.timezone:
         name: Europe/Madrid
+      become: yes
 
 # Install chorny
     - name: Install chorny
@@ -31,12 +32,12 @@
         name: chronyd
         state: started
         enabled: yes
-        masked: nos
+        masked: no
       become: yes
 
 # Disable SELinux
     - name: Disable SELinux
-      selinux:
+      ansible.posix.selinux:
         state: disabled
       become: yes
 
