@@ -1,0 +1,80 @@
+---
+
+# Activate transparent masquerading
+- name: Activate transparent masquerading
+  command: modprobe br_netfilter
+  become: yes
+
+- name: Config firewall-cmd
+  command: firewall-cmd --add-masquerade --permanent
+  become: yes
+
+- name: Reload firewall-cmd
+  command: firewall-cmd --reload
+  become: yes
+
+# Config to allow kubernetes to correctly handle traffic with the firewall
+- name: Copy file k8s.conf
+  copy:
+    src: files/k8s.conf
+    dest: /etc/sysctl.d/k8s.conf
+    owner: root
+    group: root
+
+- name: Aply changes
+  command: sysctl --system
+
+# Disabled swap
+- name: Disabled swap
+  command: swapoff  -a
+  become: yes
+
+- name: Delete /etc/fstab
+  command: sed -i '/swap/d' /etc/fstab
+  become: yes
+
+# Install CRI-O
+- name: Get CRI-O package 01
+  command: wget -O /etc/yum.repos.d/devel:kubic:libcontainers:stable.repo https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/CentOS_8_Stream/devel:kubic:libcontainers:stable.repo
+  become: yes
+
+- name: Get CRI-O package 02
+  command: wget -O /etc/yum.repos.d/devel:kubic:libcontainers:stable:cri-o:1.23:1.23.1.repo https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:1.23:1.23.1/CentOS_8_Stream/devel:kubic:libcontainers:stable:cri-o:1.23:1.23.1.repo
+  become: yes
+
+- name: Configure the necessary kernel modules for CRI-O
+  become: yes
+  copy:
+    src: files/crio.conf
+    dest: '/etc/modules-load.d/crio.conf'
+
+- name: Install CRI-O
+  dnf:
+    name: cri-o
+    state: latest
+  become: yes
+
+- name: Start and enable services
+  systemd:
+    name: crio
+    state: started
+    enabled: true
+
+# K8 Install
+- name: Config k8 repo
+  become: yes
+  copy:
+    src: files/kubernetes.repo
+    dest: /etc/yum.repos.d/kubernetes.repo
+
+- name: Install K8 package
+  dnf:
+    name: ['kubelet','kubeadm','kubectl']
+    state: present
+    disable_excludes: 'kubernetes'
+
+- name: Start K8 services
+  systemd:
+   name: kubelet
+   state: started
+   enabled: true
