@@ -108,7 +108,9 @@ resource "azurerm_linux_virtual_machine" "myVMWorker02" {
             "sudo chmod 600 ~/.ssh/id_az_stdent",
             "sudo dnf install epel-release -y",
             "sudo dnf install ansible git tree jq -y",
-            "sudo dnf install python36 -y"
+            "sudo dnf install python36 -y",
+            "ansible-galaxy collection install community.general",
+            "ansible-galaxy collection install ansible.posix",
         ]
     }
 
