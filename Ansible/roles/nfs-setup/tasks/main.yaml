@@ -22,25 +22,13 @@
     state: directory
   become: yes
 
-# Add /etc/exports to master
-- name: Add /etc/exports to master
-  lineinfile:
+# Copy and exports file
+- name: "Copy and exports file"
+  become: true
+  copy:
+    src: files/exports
     dest: /etc/exports
-    line: "/srv/nfs/ {{ hostvars[item].ansible_host }}(rw,sync)"
-    state: present
-  when: hostvars[item].ansible_host is defined
-  with_items: "{{ groups.master }}"
-  become: yes
-
-# Add /etc/exports to workers
-- name: Add /etc/exports to workers
-  lineinfile:
-    dest: /etc/exports
-    line: "/srv/nfs/ {{ hostvars[item].ansible_host }}(rw,sync)"
-    state: present
-  when: hostvars[item].ansible_host is defined
-  with_items: "{{ groups.workers }}"
-  become: yes
+    mode: u=rw,g=r,o=r
 
 # Reread the /etc/exports file
 - name: Run exportfs -r

@@ -1,0 +1,35 @@
+---
+
+# Activate transparent masquerading
+- name: Activate transparent masquerading
+  command: modprobe br_netfilter
+  become: yes
+
+- name: Config firewall-cmd
+  command: firewall-cmd --add-masquerade --permanent
+  become: yes
+
+- name: Reload firewall-cmd
+  command: firewall-cmd --reload
+  become: yes
+
+# Config to allow kubernetes to correctly handle traffic with the firewall
+- name: Copy file k8s.conf
+  copy:
+    src: files/k8s.conf
+    dest: /etc/sysctl.d/k8s.conf
+    mode: u=rw,g=r,o=r
+
+- name: Aply changes
+  command: sysctl --system
+
+# Disabled swap
+- name: Disabled swap
+  command: swapoff  -a
+  become: yes
+
+- name: Delete /etc/fstab
+  command: sed -i '/swap/d' /etc/fstab
+  become: yes
+
+  
