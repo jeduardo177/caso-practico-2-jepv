@@ -1,9 +1,9 @@
 ---
 
-- name: Commons config K8
-  hosts: master, worker01
+- name: Config K8 master
+  hosts: master
   vars_files:
     - "group_vars/commons.yaml"
-  gather_facts: true
+  gather_facts: false
   roles:
-    - k8-common-setup
+    - k8-master-setup

@@ -1,0 +1,92 @@
+---
+# Configure the firewall to access the kubernetes services
+- name: Open port 6443
+  firewalld:
+    permanent: yes
+    immediate: yes
+    port: 6443/tcp
+    state: enabled
+  become: yes
+
+- name: Open ports 2379-2380
+  firewalld:
+    permanent: yes
+    immediate: yes
+    port: 2379-2380/tcp
+    state: enabled
+  become: yes
+
+- name: Open ports 10250-10252
+  firewalld:
+    permanent: yes
+    immediate: yes
+    port: 10250-10252/tcp
+    state: enabled
+  become: yes
+
+- name: Open ports 10255
+  firewalld:
+    permanent: yes
+    immediate: yes
+    port: 10255/tcp
+    state: enabled
+  become: yes
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+  become: yes
+
+# Config kudeadm
+- name: Config kudeadm
+  command: kubeadm config images pull
+  become: yes
+
+# Config Firewall to admit workers
+- name: Config Firewall to admit worker
+  firewalld:
+    permanent: yes
+    immediate: yes
+    rich_rule: "rule family=ipv4 source address=10.0.0.0/16 accept"
+    state: enabled
+  become: yes
+
+- name: Reload firewall
+  command: firewall-cmd --reload
+  become: yes
+
+# Install CNI plugin
+- name: Install CNI plugin
+  command: kubeadm init --pod-network-cidr 192.169.0.0/16
+  become: yes
+  register: token_k8_nodes
+  ignore_errors: true
+
+- name: Save tokens and logs to join the workers to the cluster
+  local_action: copy content={{ token_k8_nodes.stdout }} dest=file/k8s_nodes.txt
+  when: token is succeeded
+
+# Config root user
+- name: Export Kubeconfig
+  shell: export KUBECONFIG=/etc/kubernetes/admin.conf
+
+- name: Create .kube
+  command: mkdir -p /root/.kube
+  become: yes
+
+- name: Copy admin.conf file
+  command: cp -i /etc/kubernetes/admin.conf /root/.kube/config
+  become: yes
+
+- name: Changing permissions
+  command: chown $(id -u):$(id -g) /root/.kube/config
+  become: yes
+
+# Install Calico
+- name: Install Calido
+  command: kubectl --kubeconfig=/root/.kube/config apply -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
+  become: yes
+
+#Add ingress
+- name: Add ingress
+  command: kubectl apply -f https://raw.githubusercontent.com/haproxytech/kubernetes-ingress/master/deploy/haproxy-ingress.yaml
+  become: yes
